@@ -90,7 +90,7 @@ public class LibraryController {
   public ResponseEntity<List<AuthorDTO>> listAuthors() {
     List<Author> authors = libraryService.findAuthors();
     List<AuthorDTO> authorsDTO = authors.stream().map(author -> {
-    AuthorDTO authorDTO = new AuthorDTO(author.getName());
+    AuthorDTO authorDTO = new AuthorDTO(author.getName(), author.getBirthDate(), author.getBiography());
     return authorDTO;
     }).collect(Collectors.toList());
     
