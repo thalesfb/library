@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+import java.util.List;
 @Entity
 @Table(name = "user")
 @Getter
@@ -21,8 +21,6 @@ public class User extends Person {
     
     private String password;
 
-    // @OneToOne
-    // @JoinColumn(name = "person_id")
-    // private Person person;
-    
+    @OneToMany(mappedBy = "user")
+    private List<Loan> loans;
 }
