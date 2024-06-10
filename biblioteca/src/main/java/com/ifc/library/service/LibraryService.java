@@ -125,7 +125,7 @@ public class LibraryService {
   }
 
   public void removeCourse(Course course) {
-    courseRepository.removeCourse(course.getName());
+    courseRepository.deleteByName(course.getName());
   }
   
 }
