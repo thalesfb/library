@@ -1,6 +1,6 @@
 package com.ifc.library.observer;
 
-public interface Subjectject {
+public interface Subject {
   void addObserver(Observer observer);
   void removeObserver(Observer observer);
   void notifyObservers(String mensagem);
