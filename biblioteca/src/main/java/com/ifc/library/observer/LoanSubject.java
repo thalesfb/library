@@ -17,9 +17,9 @@ public class LoanSubject implements Subject {
     }
 
     @Override
-    public void notifyObservers() {
+    public void notifyObservers(String mensagem) {
         for (Observer observer : observers) {
-            observer.update("Data de devolução próxima.");
+            observer.update(mensagem);
         }
     }
 }
