@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ifc.library.entity.*;
 import com.ifc.library.repositories.*;
-
 import lombok.AllArgsConstructor;
-
 import org.springframework.stereotype.Service;
-
+import com.ifc.library.factory.UserObserverFactory;
+import com.ifc.library.observer.Subject;
+import com.ifc.library.observer.UserObserver;
 
 import java.util.List;
 
@@ -19,10 +19,16 @@ public class LibraryService {
 
   private final Library library = Library.getInstance();
 
+  @Autowired
   private AuthorRepository authorRepository;
+  @Autowired
   private BookRepository bookRepository;
+  @Autowired
   private UserRepository userRepository;
+  @Autowired
   private LoanRepository loanRepository;
+  @Autowired
+  private UserObserverFactory userObserverFactory;
 
   public void registerAuthor(Author author) {
     authorRepository.save(author);
@@ -31,6 +37,10 @@ public class LibraryService {
   public Author findAuthorByName(String author) {
     Optional<Author> authorOpt = authorRepository.findByName(author);
     return authorOpt.orElse(null);
+  }
+
+  public List<Author> findAuthors(){
+    return authorRepository.findAll();
   }
 
   public void removeAuthor(Author author) {
@@ -97,6 +107,23 @@ public class LibraryService {
 
   public List<User> getAllUsers(){
       return userRepository.findAll();
+  }
+
+  public void adicionarObservador(Subject subject, String email) {
+      UserObserver observer = userObserverFactory.createUserObserver(email);
+      subject.addObserver(observer);
+  }
+
+  public void registerCourse(Course course) {
+    library.registerCourse(course);
+  }
+
+  public List<Course> findCourses() {
+    return library.findCourses();
+  }
+
+  public void removeCourse(Course course) {
+    library.removeCourse(course);
   }
   
 }
