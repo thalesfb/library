@@ -1,20 +1,14 @@
 package com.ifc.library.observer;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
-@Component
+@AllArgsConstructor
 public class UserObserver implements Observer {
-    private String email;
-
-    @Autowired
-    private JavaMailSender mailSender;
-
-    public UserObserver(String email) {
-        this.email = email;
-    }
+    private final String email;
+    private final JavaMailSender mailSender;
 
     @Override
     public void update(String mensagem) {
