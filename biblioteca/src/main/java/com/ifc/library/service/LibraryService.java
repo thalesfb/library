@@ -64,7 +64,7 @@ public class LibraryService {
   }
 
   public Loan findLoanByTitle(String title) {
-    Optional<Loan> bookOpt = loanRepository.findByTitle(title);
+    Optional<Loan> bookOpt = loanRepository.findByBookTitle(title);
     return bookOpt.orElse(null);
   }
 
