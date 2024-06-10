@@ -1,8 +1,10 @@
 package com.ifc.library.observer;
 
+import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class LoanSubject implements Subject {
     private List<Observer> observers = new ArrayList<>();
 
