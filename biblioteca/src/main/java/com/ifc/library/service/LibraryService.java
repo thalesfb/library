@@ -29,6 +29,8 @@ public class LibraryService {
   private LoanRepository loanRepository;
   @Autowired
   private UserObserverFactory userObserverFactory;
+  @Autowired
+  private CourseRepository courseRepository;
 
   public void registerAuthor(Author author) {
     authorRepository.save(author);
@@ -115,15 +117,15 @@ public class LibraryService {
   }
 
   public void registerCourse(Course course) {
-    library.registerCourse(course);
+    courseRepository.save(course);
   }
 
   public List<Course> findCourses() {
-    return library.findCourses();
+    return courseRepository.findAll();
   }
 
   public void removeCourse(Course course) {
-    library.removeCourse(course);
+    courseRepository.removeCourse(course.getName());
   }
   
 }
