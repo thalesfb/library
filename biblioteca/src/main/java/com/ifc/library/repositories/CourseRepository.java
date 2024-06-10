@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface CourseRepository extends JpaRepository<Course, String> {
 
     Optional<Course> findByName(String name);
-    Optional<Student> findStudent(String course);
+    // Optional<Student> findStudent(String course);
 }
