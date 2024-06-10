@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import com.ifc.library.entity.Course;
 import com.ifc.library.entity.Student;
 import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface CourseRepository extends JpaRepository<Course, String> {
