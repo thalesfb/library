@@ -6,12 +6,13 @@ import com.ifc.library.service.LibraryService;
 import lombok.RequiredArgsConstructor;
 
 import com.ifc.library.dto.BookDTO;
-import com.ifc.library.dto.UserDTO;
 import com.ifc.library.repositories.BookRepository;
+import com.ifc.library.repositories.UserRepository;
+import com.ifc.library.repositories.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,17 +23,17 @@ public class LibraryController {
  
   private final LibraryService libraryService;
   private final BookRepository bookRepository;
-  
+  private final AuthorRepository authorRepository;
 
   @PostMapping("/book")
   public ResponseEntity<String> registerBook(@RequestBody BookDTO body) {
     Optional<Book> bookOpt = this.bookRepository.findByIsbn(body.isbn());
 
-    if (bookOpt == null) {
-      Book book = new Book;
+    if (!bookOpt.isPresent()) {
+      Book book = new Book();
       book.setIsbn(body.isbn());
       book.setTitle(body.title());
-      book.setAuthor(body.author());
+      // book.setAuthor(authorRepository.findByName(body.author()));
 
       libraryService.registerBook(book);
       return ResponseEntity.ok("Book registered");
@@ -43,9 +44,8 @@ public class LibraryController {
 
   @DeleteMapping("/book/{isbn}")
   public ResponseEntity<String> removeBook(@PathVariable String isbn) {
-    Book book = this.bookRepository.findByIsbn(isbn);
-
-    if (book != null) {
+    Optional<Book> bookOpt = this.bookRepository.findByIsbn(isbn);
+    if (bookOpt.isPresent()) {
       libraryService.removeBook(isbn);
       return ResponseEntity.ok("Book removed");
     } else {
@@ -56,13 +56,10 @@ public class LibraryController {
   @GetMapping("/book")
   public ResponseEntity<List<BookDTO>> listBooks() {
     List<Book> books = libraryService.findBooks();
-    List<BookDTO> booksDTO = books.stream().map(book -> 
-    BookDTO bookDTO = new BookDTO();
-    bookDTO.setIsbn(book.getIsbn());
-    bookDTO.setTitle(book.getTitle());
-    bookDTO.setAuthor(book.getAuthor());
+    List<BookDTO> booksDTO = books.stream().map(book -> {
+    BookDTO bookDTO = new BookDTO(book.getIsbn(), book.getTitle(), book.getAuthor().getName());
     return bookDTO;
-    ).collect(Collectors.toList());
+    }).collect(Collectors.toList());
     
     return ResponseEntity.ok(booksDTO);
   }
