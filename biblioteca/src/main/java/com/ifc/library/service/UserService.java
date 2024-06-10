@@ -28,4 +28,8 @@ public class UserService {
         Optional<User> userOpt = userRepository.findByEmail(email);
         return userOpt.orElse(null);
     }
+    public void removeUser(String email) {
+        // Implementação do método de remoção
+        userRepository.deleteByEmail(email);
+    }
 }
