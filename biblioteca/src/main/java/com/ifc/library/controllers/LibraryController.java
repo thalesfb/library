@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +23,9 @@ public class LibraryController {
   private final LibraryService libraryService;
   private final BookRepository bookRepository;
   private final AuthorRepository authorRepository;
+  private final UserRepository userRepository;
+  private final LoanRepository loanRepository;
+  private final CourseRepository courseRepository;
 
   @PostMapping("/book")
   public ResponseEntity<String> registerBook(@RequestBody BookDTO body) {
@@ -78,8 +84,9 @@ public class LibraryController {
   @DeleteMapping("/author/{name}")
   public ResponseEntity<String> removeAuthor(@PathVariable String name) {
     Optional<Author> authorOpt = this.authorRepository.findByName(name);
+
     if (authorOpt.isPresent()) {
-      libraryService.removeAuthor(authorOpt);
+      libraryService.removeAuthor(authorOpt.get());
       return ResponseEntity.ok("Author removed");
     } else {
       return ResponseEntity.badRequest().body("Author not found");
@@ -90,7 +97,16 @@ public class LibraryController {
   public ResponseEntity<List<AuthorDTO>> listAuthors() {
     List<Author> authors = libraryService.findAuthors();
     List<AuthorDTO> authorsDTO = authors.stream().map(author -> {
-    AuthorDTO authorDTO = new AuthorDTO(author.getName(), author.getBirthDate(), author.getBiography());
+    AuthorDTO authorDTO = new AuthorDTO();
+    authorDTO.setName(author.getName());
+    authorDTO.setBiography(author.getBiography());
+    try {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date birthDate = formatter.parse(body.birthDate());
+        authorDTO.setBirthDate(birthDate);
+    } catch (ParseException e) {
+        return ResponseEntity.badRequest().body("Invalid date format. Use 'yyyy-MM-dd'.");
+    }
     return authorDTO;
     }).collect(Collectors.toList());
     
@@ -101,7 +117,12 @@ public class LibraryController {
   public ResponseEntity<List<LoanDTO>> listLoans() {
     List<Loan> loans = libraryService.findLoans();
     List<LoanDTO> loansDTO = loans.stream().map(loan -> {
-    LoanDTO loanDTO = new LoanDTO(loan.getId(), loan.getBook().getTitle(), loan.getUser().getName(), loan.getLoanDate(), loan.getReturnDate());
+    LoanDTO loanDTO = new LoanDTO();
+    loanDTO.setId(loan.getId());
+    loanDTO.setBook(loan.getBook().getTitle());
+    loanDTO.setUser(loan.getUser().getName());
+    loanDTO.setLoanDate(loan.getLoanDate());
+    loanDTO.setReturnDate(loan.getReturnDate());
     return loanDTO;
     }).collect(Collectors.toList());
     
@@ -128,10 +149,10 @@ public class LibraryController {
   }
 
   @DeleteMapping("/loan/{id}")
-  public ResponseEntity<String> removeLoan(@PathVariable Long id) {
+  public ResponseEntity<String> removeLoan(@PathVariable String id) {
     Optional<Loan> loanOpt = this.loanRepository.findById(id);
     if (loanOpt.isPresent()) {
-      libraryService.removeLoan(loandOpt);
+      libraryService.removeLoan(loanOpt.get());
       return ResponseEntity.ok("Loan removed");
     } else {
       return ResponseEntity.badRequest().body("Loan not found");
@@ -157,7 +178,7 @@ public class LibraryController {
       Course course = new Course();
       course.setName(body.name());
 
-      libraryService.registerCourse(courseOpt);
+      libraryService.registerCourse(courseOpt.get());
       return ResponseEntity.ok("Course registered");
     } else {
       return ResponseEntity.badRequest().body("Course already registered");
@@ -165,10 +186,10 @@ public class LibraryController {
   }
 
   @DeleteMapping("/course/{id}")
-  public ResponseEntity<String> removeCourse(@PathVariable Long id) {
+  public ResponseEntity<String> removeCourse(@PathVariable String id) {
     Optional<Course> courseOpt = this.courseRepository.findById(id);
     if (courseOpt.isPresent()) {
-      libraryService.removeCourse(courseOpt);
+      libraryService.removeCourse(courseOpt.get());
       return ResponseEntity.ok("Course removed");
     } else {
       return ResponseEntity.badRequest().body("Course not found");
