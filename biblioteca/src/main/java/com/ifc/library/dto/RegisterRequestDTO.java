@@ -1,6 +1,6 @@
 package com.ifc.library.dto;
 
-public record RegisterRequestDTO (
+public record RegisterRequestDTO(
     String name,
     String email,
     String password,
