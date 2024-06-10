@@ -1,0 +1,84 @@
+@startuml Biblioteca
+
+class Pessoa {
+  - id: String
+  - cpf: String
+  - nome: String
+  - email: String
+  - dataNascimento: Date
+}
+
+class Usuario extends Pessoa {
+  - id: String
+  - senha: String
+  + registrar(cpf: String, nome: String, email: String, senha: String, dataNascimento: Date): void
+  + login(email: String, senha: String): void
+}
+
+class Curso {
+  - id: String
+  - nome: String
+  - duracao: int
+  + cadastrar(nome: String, duracao: int): void
+  + buscar(): List<Curso>
+}
+
+class Estudante extends Usuario {
+  - id: String
+  - matricula: String
+  - idCurso: int
+}
+
+class Professor extends Usuario {
+  - departamento: String
+}
+
+class Autor {
+  - id: String
+  - nome: String
+  - dataNascimento: Date
+  - biografia: String
+  + cadastrar(nome: String, dataNascimento: Date, biografia: String): void
+}
+
+class Livro {
+  - id: String
+  - titulo: String
+  - isbn: String
+  - disponibilidade: boolean
+  + buscar(): List<Livro>
+}
+
+class Emprestimo {
+  - id: String
+  - dataEmprestimo: Date
+  - dataDevolucao: Date
+  + emprestar(usuario: Usuario, livro: Livro): void
+  + devolver(usuario: Usuario, livro: Livro): void
+}
+
+class Administrador extends Usuario {
+  - id: String
+  + adicionarLivro(livro: Livro): void
+  + removerLivro(livro: Livro): void
+  + gerenciarUsuarios(usuario: Usuario): void
+}
+
+class Biblioteca {
+  - livros: List<Livro>
+  - usuarios: List<Usuario>
+}
+
+Pessoa "1" *-- "0..*" Email
+
+Livro "1" *-- "0..*" Emprestimo
+Usuario "1" *-- "0..*" Emprestimo
+
+Biblioteca "1" *-- "1..*" Livro
+Biblioteca "1" *-- "1..*" Usuario
+
+Curso "1" *-- "0..*" Estudante
+
+Autor "1..*" *-- "1..*" Livro
+
+@enduml

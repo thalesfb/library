@@ -1,0 +1,24 @@
+// {type: usecase}
+// {direction: leftToRight}
+// {description: <p>Este diagrama de caso de uso descreve as funcionalidades do sistema de gerenciamento de biblioteca.</p>}
+
+// Definição dos Atores
+[Usuario]
+[Administrador]
+[Estudante]
+[Professor]
+
+// Casos de uso do Sistema de Gerenciamento de Biblioteca
+[Usuario]-(Registrar)
+[Usuario]-(Login)
+[Usuario]-(Buscar Livro)
+[Usuario]-(Reservar Livro)
+[Usuario]-(Emprestar Livro)
+[Usuario]-(Devolver Livro)
+[Administrador]-(Adicionar Livro)
+[Administrador]-(Remover Livro)
+[Administrador]-(Gerenciar Usuários)
+[Professor]-(Reservar Livro para Alunos)
+[Usuario]^[Estudante]
+[Usuario]^[Professor]
+[Administrador]^[Usuario]
