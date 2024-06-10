@@ -28,8 +28,4 @@ public class UserService {
         Optional<User> userOpt = userRepository.findByEmail(email);
         return userOpt.orElse(null);
     }
-
-    public Iterable<User> getAllUsers(){
-        return userRepository.findAll();
-    }
 }
