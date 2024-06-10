@@ -17,9 +17,9 @@ public class LoanSubject implements Subject {
     }
 
     @Override
-    public void notifyObservers(String mensagem) {
+    public void notifyObservers() {
         for (Observer observer : observers) {
-            observer.update(mensagem);
+            observer.update("Data de empréstimo expirada!");
         }
     }
 }
