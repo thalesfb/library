@@ -11,10 +11,14 @@ import java.util.List;
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, String> {
   
-    Optional<Loan> findByBookTitle(String title);
-    Optional<Loan> findByBookIsbn(String isbn);
-    Optional<Loan> findByPersonEmail(String email);
-    // @Query("SELECT l FROM Loan l WHERE l.user.email = :email")
-    // List<Loan> findByUserEmail(@Param("email") String email);
+    @Query("SELECT l FROM Loan l WHERE l.book.title = :title")
+    Optional<Loan> findByBookTitle(@Param("title") String title);
+
+    @Query("SELECT l FROM Loan l WHERE l.book.isbn = :isbn")
+    Optional<Loan> findByBookIsbn(@Param("isbn") String isbn);
+
+    @Query("SELECT l FROM Loan l WHERE l.user.person.email = :email")
+    List<Loan> findByPersonEmail(@Param("email") String email);
+
     List<Loan> findAll();
 }
