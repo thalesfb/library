@@ -135,9 +135,20 @@ public class LibraryController {
       Loan loan = new Loan();
       loan.setBook(bookOpt.get());
       loan.setUser(userOpt.get());
-      loan.setLoanDate(body.loanDate());
-      loan.setReturnDate(body.returnDate());
-
+      try {
+          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+          Date loanDate = formatter.parse(body.loanDate());
+          loan.setLoanDate(loanDate);
+      } catch (ParseException e) {
+          return ResponseEntity.badRequest().body("Invalid date format. Use 'yyyy-MM-dd'.");
+      }
+      try {
+          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+          Date returnDate = formatter.parse(body.returnDate());
+          loan.setReturnDate(returnDate);
+      } catch (ParseException e) {
+          return ResponseEntity.badRequest().body("Invalid date format. Use 'yyyy-MM-dd'.");
+      }
       libraryService.registerLoan(loan);
       return ResponseEntity.ok("Loan registered");
     } else {
