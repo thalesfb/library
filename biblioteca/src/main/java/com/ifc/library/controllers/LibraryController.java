@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/library")
@@ -97,16 +98,11 @@ public class LibraryController {
   public ResponseEntity<List<AuthorDTO>> listAuthors() {
     List<Author> authors = libraryService.findAuthors();
     List<AuthorDTO> authorsDTO = authors.stream().map(author -> {
-    AuthorDTO authorDTO = new AuthorDTO();
-    authorDTO.setName(author.getName());
-    authorDTO.setBiography(author.getBiography());
-    try {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date birthDate = formatter.parse(body.birthDate());
-        authorDTO.setBirthDate(birthDate);
-    } catch (ParseException e) {
-        return ResponseEntity.badRequest().body("Invalid date format. Use 'yyyy-MM-dd'.");
-    }
+    AuthorDTO authorDTO = new AuthorDTO(
+      author.getName(),
+      author.getBirthDate().toString(),
+      author.getBiography()
+    );
     return authorDTO;
     }).collect(Collectors.toList());
     
@@ -117,12 +113,13 @@ public class LibraryController {
   public ResponseEntity<List<LoanDTO>> listLoans() {
     List<Loan> loans = libraryService.findLoans();
     List<LoanDTO> loansDTO = loans.stream().map(loan -> {
-    LoanDTO loanDTO = new LoanDTO();
-    loanDTO.setId(loan.getId());
-    loanDTO.setBook(loan.getBook().getTitle());
-    loanDTO.setUser(loan.getUser().getName());
-    loanDTO.setLoanDate(loan.getLoanDate());
-    loanDTO.setReturnDate(loan.getReturnDate());
+    LoanDTO loanDTO = new LoanDTO(
+      loan.getId(),
+      loan.getBook().getIsbn(),
+      loan.getUser().getName(),
+      loan.getLoanDate().toString(),
+      loan.getReturnDate().toString()
+    );
     return loanDTO;
     }).collect(Collectors.toList());
     
