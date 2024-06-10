@@ -1,8 +1,8 @@
 package com.ifc.library.entity;
 
 import jakarta.persistence.*;
-import java.util.Date;
 
+import java.util.Date;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Loan {
+public class Loan{
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
