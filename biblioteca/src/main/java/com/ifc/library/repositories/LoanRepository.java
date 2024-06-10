@@ -17,7 +17,7 @@ public interface LoanRepository extends JpaRepository<Loan, String> {
     @Query("SELECT l FROM Loan l WHERE l.book.isbn = :isbn")
     Optional<Loan> findByBookIsbn(@Param("isbn") String isbn);
 
-    @Query("SELECT l FROM Loan l WHERE l.user.person.email = :email")
+    @Query("SELECT l FROM Loan l WHERE l.user.email = :email")
     List<Loan> findByPersonEmail(@Param("email") String email);
 
     List<Loan> findAll();
