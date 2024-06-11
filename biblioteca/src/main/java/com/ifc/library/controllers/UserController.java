@@ -27,6 +27,6 @@ public class UserController {
             return ResponseEntity.ok("User removed");
         } else {
             return ResponseEntity.badRequest().body("User not found");
-        }
-    }
+        }
+    }
 }
