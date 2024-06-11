@@ -13,7 +13,7 @@ public interface CourseRepository extends JpaRepository<Course, String> {
     Optional<Course> findByName(String name);
     Optional<Course> findById(String id);
     Optional<Course> deleteByName(String name);
-    Optional<Course> deleteById(String id);
+    // Optional<Course> deleteById(String id);
     Optional<Course> findByStudent(Student student);
     List<Course> findAll();
 }
