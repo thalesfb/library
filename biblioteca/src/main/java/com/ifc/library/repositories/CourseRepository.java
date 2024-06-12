@@ -14,6 +14,6 @@ public interface CourseRepository extends JpaRepository<Course, String> {
     Optional<Course> findById(String id);
     Optional<Course> deleteByName(String name);
     // Optional<Course> deleteById(String id);
-    Optional<Course> findByStudent(Student student);
+    // Optional<Course> findByStudent(Student student);
     List<Course> findAll();
 }
