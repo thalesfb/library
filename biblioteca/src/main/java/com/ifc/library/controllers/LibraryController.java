@@ -5,7 +5,6 @@ import com.ifc.library.service.*;
 import lombok.RequiredArgsConstructor;
 import com.ifc.library.dto.*;
 import com.ifc.library.repositories.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.stream.Collectors;
@@ -14,7 +13,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/library")
@@ -29,10 +27,10 @@ public class LibraryController {
   private final CourseRepository courseRepository;
 
   @PostMapping("/book")
-  public ResponseEntity<String> registerBook(@RequestBody BookDTO body) {
+  public ResponseEntity registerBook(@RequestBody BookDTO body) {
     Optional<Book> bookOpt = this.bookRepository.findByIsbn(body.isbn());
 
-    if (!bookOpt.isPresent()) {
+    if (bookOpt.isEmpty()) {
       Book book = new Book();
       book.setIsbn(body.isbn());
       book.setTitle(body.title());
@@ -45,14 +43,14 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/book/{isbn}")
-  public ResponseEntity<String> removeBook(@PathVariable String isbn) {
-    Optional<Book> bookOpt = this.bookRepository.findByIsbn(isbn);
-    if (bookOpt.isPresent()) {
-      libraryService.removeBook(isbn);
-      return ResponseEntity.ok("Book removed");
-    } else {
+  @DeleteMapping("/book")
+  public ResponseEntity removeBook(@RequestBody BookDTO body) {
+    Optional<Book> bookOpt = this.bookRepository.findByIsbn(body.isbn());
+    if (bookOpt.isEmpty()) {
       return ResponseEntity.badRequest().body("Book not found");
+    } else {
+      libraryService.removeBook(body.isbn());
+      return ResponseEntity.ok("Book removed");
     }
   }
 
