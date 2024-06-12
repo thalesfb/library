@@ -19,7 +19,7 @@ public class UserController {
     public final UserService userService;
     public final UserRepository userRepository;
 
-    @DeleteMapping("/delete/{email}")
+    @DeleteMapping("/{email}")
     public ResponseEntity<String> removeUser(@PathVariable String email) {
         Optional<User> userOpt = this.userRepository.findByEmail(email);
         if (userOpt.isPresent()) {
