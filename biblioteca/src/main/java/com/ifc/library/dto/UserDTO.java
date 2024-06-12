@@ -1,6 +1,6 @@
 package com.ifc.library.dto;
 
 public record UserDTO(
-  String name,
+  String email,
   String token
   ) {}
