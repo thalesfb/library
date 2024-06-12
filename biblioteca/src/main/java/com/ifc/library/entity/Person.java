@@ -2,8 +2,6 @@ package com.ifc.library.entity;
 
 import jakarta.persistence.*;
 import java.util.Date;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.AllArgsConstructor;
