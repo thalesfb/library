@@ -1,27 +1,22 @@
 package com.ifc.library.controllers;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.ifc.library.dto.LoginRequestDTO;
 import com.ifc.library.dto.RegisterRequestDTO;
 import com.ifc.library.dto.ResponseDTO;
 import com.ifc.library.entity.User;
 import com.ifc.library.factory.StudentFactory;
 import com.ifc.library.factory.TeacherFactory;
-
 import com.ifc.library.repositories.UserRepository;
 import com.ifc.library.infra.security.TokenService;
-
 import java.text.SimpleDateFormat;
 import java.util.Optional;
-
 import java.text.ParseException;
 import java.util.Date;
 
@@ -30,7 +25,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
     private final StudentFactory studentFactory;
@@ -38,7 +33,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO body) {
-        User user = this.repository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = this.userRepository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
         if (passwordEncoder.matches(body.password(), user.getPassword())) {
             String token = this.tokenService.generateToken(user);
             return ResponseEntity.ok(new ResponseDTO(user.getName(), token));
@@ -48,10 +43,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody RegisterRequestDTO body) {
-        Optional<User> user = this.repository.findByEmail(body.email());
+        Optional<User> user = this.userRepository.findByEmail(body.email());
 
         if (user.isEmpty()) {
             User newUser;
+            
             if (body.type().equalsIgnoreCase("student")) {
                 newUser = studentFactory.createStudent(body.registration());
             } else if (body.type().equalsIgnoreCase("teacher")) {
@@ -59,6 +55,7 @@ public class AuthController {
             } else {
                 return ResponseEntity.badRequest().build();
             }
+
             newUser.setPassword(passwordEncoder.encode(body.password()));
             newUser.setEmail(body.email());
             newUser.setName(body.name());
@@ -72,9 +69,7 @@ public class AuthController {
                 return ResponseEntity.badRequest().body("Invalid date format. Use 'yyyy-MM-dd'.");
             }
 
-            // newUser.setPerson(newUser);
-
-            this.repository.save(newUser);
+            this.userRepository.save(newUser);
 
             String token = this.tokenService.generateToken(newUser);
             return ResponseEntity.ok(new ResponseDTO(newUser.getName(), token));
