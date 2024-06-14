@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,7 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import com.ifc.library.dto.AuthorDTO;
 import com.ifc.library.dto.BookDTO;
 import com.ifc.library.dto.CourseDTO;
@@ -31,7 +30,6 @@ import com.ifc.library.repositories.CourseRepository;
 import com.ifc.library.repositories.LoanRepository;
 import com.ifc.library.repositories.UserRepository;
 import com.ifc.library.service.LibraryService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -54,7 +52,6 @@ public class LibraryController {
       Book book = new Book();
       book.setIsbn(body.isbn());
       book.setTitle(body.title());
-      // book.setAuthor(authorRepository.findByName(body.author()));
 
       libraryService.registerBook(book);
       return ResponseEntity.ok("Book registered");
@@ -63,22 +60,21 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/deletebookbyid/{id}")
+  @DeleteMapping("/book/{id}")
   public ResponseEntity<Void> removeBook(@PathVariable String id) {
     
     if (!bookRepository.existsById(id)) {
       return ResponseEntity.notFound().build();
-    } else {
-      bookRepository.deleteById(id);
-      return ResponseEntity.noContent().build();
     }
+    bookRepository.deleteById(id);
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/getbooks")
   public ResponseEntity<List<BookDTO>> listBooks() {
     List<Book> books = libraryService.findBooks();
     List<BookDTO> booksDTO = books.stream().map(book -> {
-    BookDTO bookDTO = new BookDTO(book.getIsbn(), book.getTitle(), book.getAuthor().getName());
+    BookDTO bookDTO = new BookDTO(book.getIsbn(), book.getTitle());
     return bookDTO;
     }).collect(Collectors.toList());
     
@@ -100,17 +96,14 @@ public class LibraryController {
     }
   }
   
-  
-
-  @DeleteMapping("/author")
-  public ResponseEntity removeAuthor(@RequestBody AuthorDTO body) {
-    Optional<Author> authorOpt = this.authorRepository.findByName(body.name());
-    if(authorOpt.isEmpty()) {
-        return ResponseEntity.badRequest().body("Author not found");
-    } else{
-            libraryService.removeAuthor(body.name());
-            return ResponseEntity.ok("Author removed");
+@DeleteMapping("/deleteAuthorByName/{name}")
+  public ResponseEntity<Void> removeAuthor(@PathVariable String name) {
+    if(!authorRepository.findByName(name).isPresent()){
+      return ResponseEntity.notFound().build();
     } 
+    libraryService.removeAuthor(name);
+    return ResponseEntity.noContent().build();
+
 }
 
   @GetMapping("/author")
@@ -147,7 +140,7 @@ public class LibraryController {
 
   @PostMapping("/loan")
   public ResponseEntity<String> registerLoan(@RequestBody LoanDTO body) {
-    Optional<Book> bookOpt = this.bookRepository.findByIsbn(body.book());
+    Optional<Book> bookOpt = this.bookRepository.findByIsbn(body.isbn());
     Optional<User> userOpt = this.userRepository.findByName(body.user());
 
     if (bookOpt.isPresent() && userOpt.isPresent()) {
@@ -175,15 +168,13 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/loan")
-  public ResponseEntity removeLoan(@RequestBody LoanDTO body) {
-    Optional<Loan> loanOpt = this.loanRepository.findById(body.id());
-    if (loanOpt.isEmpty()) {
-      return ResponseEntity.badRequest().body("Loan not found");
-    } else {
-      libraryService.removeLoan(body.id());
-      return ResponseEntity.ok("Loan Removed");
+  @DeleteMapping("/loan/{id}")
+  public ResponseEntity removeLoan(@PathVariable String id) {
+    if (!loanRepository.existsById(id)) {
+      return ResponseEntity.notFound().build();
     }
+    libraryService.removeLoan(id);
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/course")
@@ -212,15 +203,12 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/course")
-  public ResponseEntity removeCourse(@RequestBody CourseDTO body) {
-    Optional<Course> courseOpt = this.courseRepository.findById(body.id());
-    if (courseOpt.isEmpty()) {
-      return ResponseEntity.badRequest().body("Course not found");
-    } else {
-      libraryService.removeCourse(body.id());
-      return ResponseEntity.ok("Course removed");
-      
+  @DeleteMapping("/course/{id}")
+  public ResponseEntity removeCourse(@PathVariable String id) {
+    if (!courseRepository.existsById(id)) {
+      return ResponseEntity.notFound().build();
     }
+    libraryService.removeCourse(id);
+    return ResponseEntity.noContent().build();
   }
 }
