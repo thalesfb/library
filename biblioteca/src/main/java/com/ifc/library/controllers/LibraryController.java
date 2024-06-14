@@ -63,14 +63,14 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/deletebookbyid/{id}")
+  @DeleteMapping("/deleteBookById/{id}")
   public ResponseEntity<Void> removeBook(@PathVariable String id) {
     
     if (!bookRepository.existsById(id)) {
       return ResponseEntity.notFound().build();
     } 
     bookRepository.deleteById(id);
-    return ResponseEntity.notFound().build();
+    return ResponseEntity.noContent().build();
   }
 
   @GetMapping("/getbooks")
@@ -101,15 +101,14 @@ public class LibraryController {
   
   
 
-  @DeleteMapping("/author")
-  public ResponseEntity removeAuthor(@RequestBody AuthorDTO body) {
-    Optional<Author> authorOpt = this.authorRepository.findByName(body.name());
-    if(authorOpt.isEmpty()) {
-        return ResponseEntity.badRequest().body("Author not found");
-    } else{
-            libraryService.removeAuthor(body.name());
-            return ResponseEntity.ok("Author removed");
+  @DeleteMapping("/deleteAuthorByName/{name}")
+  public ResponseEntity<Void> removeAuthor(@PathVariable String name) {
+    if(!authorRepository.findByName(name).isPresent()){
+      return ResponseEntity.notFound().build();
     } 
+    libraryService.removeAuthor(name);
+    return ResponseEntity.noContent().build();
+    
 }
 
   @GetMapping("/author")

@@ -21,6 +21,7 @@ import com.ifc.library.repositories.CourseRepository;
 import com.ifc.library.repositories.LoanRepository;
 import com.ifc.library.repositories.UserRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -54,9 +55,10 @@ public class LibraryService {
   public List<Author> findAuthors(){
     return authorRepository.findAll();
   }
-  
+  @Transactional
   public void removeAuthor(String name) {
-    authorRepository.deleteByName(name);
+    authorRepository.deleteAuthorByName(name);
+    
   }
 
   public void registerBook(Book book) {
