@@ -22,14 +22,16 @@ Este projeto consiste em um sistema de gerenciamento de biblioteca desenvolvido 
 - **repositories**: Contém interfaces que estendem `JpaRepository` para acesso aos dados.
 - **service**: Contém classes de serviço que implementam a lógica de negócio.
 - **observer**: Implementa o padrão de projeto Observer para notificação de usuários.
-- **factory**: Contém fábricas para criação de observadores.
+- **factory**: Contém fábricas para criação de observadores e criação dos usuários.
 - **utils**: Contém utilitários, incluindo envio de emails.
 
 ### Funcionalidades
 
-- **Cadastro de Autores**: Permite o registro, busca e remoção de autores.
-- **Cadastro de Livros**: Permite o registro, busca (por título e ISBN) e remoção de livros.
+- **Gerenciamento de Autores**: Permite o registro, busca e remoção de autores.
+- **Gerenciamento de Livros**: Permite o registro, busca (por título e ISBN) e remoção de livros.
 - **Gerenciamento de Empréstimos**: Permite o registro, busca e remoção de empréstimos.
+- **Gerenciamento de Usuários**: Permite o registro, busca e remoção de usuários.
+- **Gerenciamento de Cursos**: Permite o registro, busca e remoção de cursos.
 - **Notificações**: Utiliza o padrão Observer para notificar usuários sobre a data de expiração dos empréstimos via email.
 
 ### Como Executar
