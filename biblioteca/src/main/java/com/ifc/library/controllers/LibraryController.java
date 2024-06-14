@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,18 +63,17 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/book")
-  public ResponseEntity<String> removeBook(@RequestBody BookDTO body) {
-    Optional<Book> bookOpt = this.bookRepository.findByIsbn(body.isbn());
-    if (bookOpt.isEmpty()) {
-      return ResponseEntity.badRequest().body("Book not found");
-    } else {
-      libraryService.removeBook(body.isbn());
-      return ResponseEntity.ok("Book removed");
-    }
+  @DeleteMapping("/deletebookbyid/{id}")
+  public ResponseEntity<Void> removeBook(@PathVariable String id) {
+    
+    if (!bookRepository.existsById(id)) {
+      return ResponseEntity.notFound().build();
+    } 
+    bookRepository.deleteById(id);
+    return ResponseEntity.notFound().build();
   }
 
-  @GetMapping("/book")
+  @GetMapping("/getbooks")
   public ResponseEntity<List<BookDTO>> listBooks() {
     List<Book> books = libraryService.findBooks();
     List<BookDTO> booksDTO = books.stream().map(book -> {
@@ -85,7 +85,7 @@ public class LibraryController {
   }
 
   @PostMapping("/author")
-  public ResponseEntity<String> registerAuthor(@RequestBody AuthorDTO body) {
+  public ResponseEntity registerAuthor(@RequestBody AuthorDTO body) {
     Optional<Author> authorOpt = this.authorRepository.findByName(body.name());
 
     if (!authorOpt.isPresent()) {

@@ -63,6 +63,11 @@ public class LibraryService {
     bookRepository.save(book);
   }
 
+  public boolean checkIfBookExistsByIsbn(String isbn) {
+    return bookRepository.existsByIsbn(isbn);
+  }
+
+
   public Book findBookByTitle(String title) {
     Optional<Book> bookOpt = bookRepository.findByTitle(title);
     return bookOpt.orElse(null);
