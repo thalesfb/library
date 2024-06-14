@@ -19,9 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-    @Autowired
     SecurityFilter securityFilter;
 
     @Bean
@@ -32,9 +29,17 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                                 .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                                 .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/user/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/library/book").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/library/book").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/library/book/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/library/loan").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/library/loan").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/library/loan/**").authenticated()
+                                .requestMatchers(HttpMethod.POST, "/library/author").authenticated()
+                                .requestMatchers(HttpMethod.GET, "/library/author").permitAll()
+                                .requestMatchers(HttpMethod.DELETE, "/library/author/**").authenticated()
                                 .anyRequest().authenticated()
-                                
-                               
                 )
                 
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
