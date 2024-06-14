@@ -2,10 +2,8 @@ package com.ifc.library.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.ifc.library.entity.Author;
 import com.ifc.library.entity.Book;
 import com.ifc.library.entity.Course;
@@ -20,7 +18,7 @@ import com.ifc.library.repositories.BookRepository;
 import com.ifc.library.repositories.CourseRepository;
 import com.ifc.library.repositories.LoanRepository;
 import com.ifc.library.repositories.UserRepository;
-
+import org.springframework.transaction.annotation.Transactional;
 import lombok.AllArgsConstructor;
 
 @Service
@@ -55,6 +53,7 @@ public class LibraryService {
     return authorRepository.findAll();
   }
   
+  @Transactional
   public void removeAuthor(String name) {
     authorRepository.deleteByName(name);
   }
