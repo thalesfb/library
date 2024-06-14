@@ -1,18 +1,38 @@
 package com.ifc.library.controllers;
 
-import com.ifc.library.entity.*;
-import com.ifc.library.service.*;
-import lombok.RequiredArgsConstructor;
-import com.ifc.library.dto.*;
-import com.ifc.library.repositories.*;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.stream.Collectors;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ifc.library.dto.AuthorDTO;
+import com.ifc.library.dto.BookDTO;
+import com.ifc.library.dto.CourseDTO;
+import com.ifc.library.dto.LoanDTO;
+import com.ifc.library.entity.Author;
+import com.ifc.library.entity.Book;
+import com.ifc.library.entity.Course;
+import com.ifc.library.entity.Loan;
+import com.ifc.library.entity.User;
+import com.ifc.library.repositories.AuthorRepository;
+import com.ifc.library.repositories.BookRepository;
+import com.ifc.library.repositories.CourseRepository;
+import com.ifc.library.repositories.LoanRepository;
+import com.ifc.library.repositories.UserRepository;
+import com.ifc.library.service.LibraryService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/library")
@@ -43,18 +63,17 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/book")
-  public ResponseEntity removeBook(@RequestBody BookDTO body) {
-    Optional<Book> bookOpt = this.bookRepository.findByIsbn(body.isbn());
-    if (bookOpt.isEmpty()) {
-      return ResponseEntity.badRequest().body("Book not found");
-    } else {
-      libraryService.removeBook(body.isbn());
-      return ResponseEntity.ok("Book removed");
-    }
+  @DeleteMapping("/deletebookbyid/{id}")
+  public ResponseEntity<Void> removeBook(@PathVariable String id) {
+    
+    if (!bookRepository.existsById(id)) {
+      return ResponseEntity.notFound().build();
+    } 
+    bookRepository.deleteById(id);
+    return ResponseEntity.notFound().build();
   }
 
-  @GetMapping("/book")
+  @GetMapping("/getbooks")
   public ResponseEntity<List<BookDTO>> listBooks() {
     List<Book> books = libraryService.findBooks();
     List<BookDTO> booksDTO = books.stream().map(book -> {
@@ -66,7 +85,7 @@ public class LibraryController {
   }
 
   @PostMapping("/author")
-  public ResponseEntity<String> registerAuthor(@RequestBody AuthorDTO body) {
+  public ResponseEntity registerAuthor(@RequestBody AuthorDTO body) {
     Optional<Author> authorOpt = this.authorRepository.findByName(body.name());
 
     if (!authorOpt.isPresent()) {
@@ -79,18 +98,19 @@ public class LibraryController {
       return ResponseEntity.badRequest().body("Author already registered");
     }
   }
+  
+  
 
-  @DeleteMapping("/author/{name}")
-  public ResponseEntity<String> removeAuthor(@PathVariable String name) {
-    Optional<Author> authorOpt = this.authorRepository.findByName(name);
-
-    if (authorOpt.isPresent()) {
-      libraryService.removeAuthor(authorOpt.get());
-      return ResponseEntity.ok("Author removed");
-    } else {
-      return ResponseEntity.badRequest().body("Author not found");
-    }
-  }
+  @DeleteMapping("/author")
+  public ResponseEntity removeAuthor(@RequestBody AuthorDTO body) {
+    Optional<Author> authorOpt = this.authorRepository.findByName(body.name());
+    if(authorOpt.isEmpty()) {
+        return ResponseEntity.badRequest().body("Author not found");
+    } else{
+            libraryService.removeAuthor(body.name());
+            return ResponseEntity.ok("Author removed");
+    } 
+}
 
   @GetMapping("/author")
   public ResponseEntity<List<AuthorDTO>> listAuthors() {
@@ -154,14 +174,18 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/loan/{id}")
-  public ResponseEntity<String> removeLoan(@PathVariable String id) {
-    Optional<Loan> loanOpt = this.loanRepository.findById(id);
-    if (loanOpt.isPresent()) {
-      libraryService.removeLoan(loanOpt.get());
-      return ResponseEntity.ok("Loan removed");
-    } else {
+
+
+
+
+  @DeleteMapping("/loan")
+  public ResponseEntity removeLoan(@RequestBody LoanDTO body) {
+    Optional<Loan> loanOpt = this.loanRepository.findById(body.id());
+    if (loanOpt.isEmpty()) {
       return ResponseEntity.badRequest().body("Loan not found");
+    } else {
+      libraryService.removeLoan(body.id());
+      return ResponseEntity.ok("Loan Removed");
     }
   }
 
@@ -191,14 +215,15 @@ public class LibraryController {
     }
   }
 
-  @DeleteMapping("/course/{id}")
-  public ResponseEntity<String> removeCourse(@PathVariable String id) {
-    Optional<Course> courseOpt = this.courseRepository.findById(id);
-    if (courseOpt.isPresent()) {
-      libraryService.removeCourse(courseOpt.get());
-      return ResponseEntity.ok("Course removed");
-    } else {
+  @DeleteMapping("/course")
+  public ResponseEntity removeCourse(@RequestBody CourseDTO body) {
+    Optional<Course> courseOpt = this.courseRepository.findById(body.id());
+    if (courseOpt.isEmpty()) {
       return ResponseEntity.badRequest().body("Course not found");
+    } else {
+      libraryService.removeCourse(body.id());
+      return ResponseEntity.ok("Course removed");
+      
     }
   }
 }

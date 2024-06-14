@@ -1,17 +1,27 @@
 package com.ifc.library.service;
 
+import java.util.List;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.ifc.library.entity.*;
-import com.ifc.library.repositories.*;
-import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Service;
+
+import com.ifc.library.entity.Author;
+import com.ifc.library.entity.Book;
+import com.ifc.library.entity.Course;
+import com.ifc.library.entity.Library;
+import com.ifc.library.entity.Loan;
+import com.ifc.library.entity.User;
 import com.ifc.library.factory.UserObserverFactory;
 import com.ifc.library.observer.Subject;
 import com.ifc.library.observer.UserObserver;
+import com.ifc.library.repositories.AuthorRepository;
+import com.ifc.library.repositories.BookRepository;
+import com.ifc.library.repositories.CourseRepository;
+import com.ifc.library.repositories.LoanRepository;
+import com.ifc.library.repositories.UserRepository;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
 
 @Service
 @AllArgsConstructor
@@ -44,14 +54,19 @@ public class LibraryService {
   public List<Author> findAuthors(){
     return authorRepository.findAll();
   }
-
-  public void removeAuthor(Author author) {
-    authorRepository.delete(author);
+  
+  public void removeAuthor(String name) {
+    authorRepository.deleteByName(name);
   }
 
   public void registerBook(Book book) {
     bookRepository.save(book);
   }
+
+  public boolean checkIfBookExistsByIsbn(String isbn) {
+    return bookRepository.existsByIsbn(isbn);
+  }
+
 
   public Book findBookByTitle(String title) {
     Optional<Book> bookOpt = bookRepository.findByTitle(title);
@@ -103,8 +118,8 @@ public class LibraryService {
     return loanRepository.findByPersonEmail(email);
   }
   
-  public void removeLoan(Loan loan) {
-    loanRepository.delete(loan);
+  public void removeLoan(String id) {
+    loanRepository.deleteById(id);
   }
 
   public List<User> getAllUsers(){
@@ -124,8 +139,8 @@ public class LibraryService {
     return courseRepository.findAll();
   }
 
-  public void removeCourse(Course course) {
-    courseRepository.deleteByName(course.getName());
+  public void removeCourse(String id) {
+    courseRepository.deleteById(id);
   }
   
 }

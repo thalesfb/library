@@ -1,15 +1,20 @@
 package com.ifc.library.controllers;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
-import com.ifc.library.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import com.ifc.library.entity.User;
-import com.ifc.library.service.UserService;
-import com.ifc.library.dto.LoginRequestDTO;
-import com.ifc.library.dto.UserDTO;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.ifc.library.dto.LoginRequestDTO;
+import com.ifc.library.entity.User;
+import com.ifc.library.repositories.UserRepository;
+import com.ifc.library.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/user")
