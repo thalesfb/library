@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PathVariable;
-import com.ifc.library.service.UserService;
+import com.ifc.library.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -13,14 +13,14 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
 
     @DeleteMapping("/{email}")
     public ResponseEntity<Void> removeUser(@PathVariable String email) {
-        if(userService.findByEmail(email) == null){
+        if(userRepository.findByEmail(email).isEmpty()) {
             return ResponseEntity.notFound().build();
-            }
-        userService.removeUser(email);
+        }
+        userRepository.deleteByEmail(email);
         return ResponseEntity.noContent().build();
     }
 }
