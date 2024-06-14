@@ -68,9 +68,10 @@ public class LibraryController {
     
     if (!bookRepository.existsById(id)) {
       return ResponseEntity.notFound().build();
-    } 
-    bookRepository.deleteById(id);
-    return ResponseEntity.notFound().build();
+    } else {
+      bookRepository.deleteById(id);
+      return ResponseEntity.noContent().build();
+    }
   }
 
   @GetMapping("/getbooks")
@@ -173,10 +174,6 @@ public class LibraryController {
       return ResponseEntity.badRequest().body("Book or user not found");
     }
   }
-
-
-
-
 
   @DeleteMapping("/loan")
   public ResponseEntity removeLoan(@RequestBody LoanDTO body) {
