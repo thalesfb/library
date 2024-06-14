@@ -2,7 +2,7 @@ package com.ifc.library.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.ifc.library.entity.User;
 import com.ifc.library.repositories.UserRepository;
 
@@ -24,10 +24,11 @@ public class UserService {
         return userOpt.orElse(null);
     }
 
-    public User findUserByEmail(String email){
+    public User findByEmail(String email){
         Optional<User> userOpt = userRepository.findByEmail(email);
         return userOpt.orElse(null);
     }
+    @Transactional
     public void removeUser(String email) {
         // Implementação do método de remoção
         userRepository.deleteByEmail(email);
